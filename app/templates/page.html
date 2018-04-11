@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<title>Page 页面</title>
+{% endblock %}
+
+{% block page_function %}
+    <script type="text/javascript" src="/static/js/baguetteBox.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-paginator.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-treeview.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        $("#paginator").bootstrapPaginator({
+            bootstrapMajorVersion: 3, //对应的bootstrap版本
+            currentPage: {{ index }}, //当前页数
+            numberOfPages: 7, //每次显示页数
+            totalPages: {{ total }}, //总页数
+            shouldShowPage: true, //是否显示该按钮
+            useBootstrapTooltip: true,
+            //改写分页按钮字样
+            itemTexts: function (type, page, current) {
+                switch (type) {
+                    case "first": return "首页";
+                    case "prev": return "上页";
+                    case "next": return "下页";
+                    case "last": return "末页";
+                    case "page": return page;
+                }
+            },
+            //点击事件
+            onPageClicked: function(event, originalEvent, type, page) {
+                location.href = "/page/" + page;
+            }
+        });
+        $("#treeview").treeview({
+            icon: "glyphicon glyphicon-stop",
+            selectedIcon: "glyphicon glyphicon-stop",
+            color: "#000000",
+            backColor: "#FFFFFF",
+            href: "#node-1",
+            highlightSelected: true,
+            selectable: true,
+            state: {
+                checked: true,
+                disabled: true,
+                expanded: true,
+                selected: true
+            },
+            tags: ['available'],
+            levels: 5,
+            data: {{ tree_data|tojson|safe }},
+            onNodeSelected: function(event, data) {
+                // alert("nodeID = " + data.nodeId)
+            }
+        });
+        baguetteBox.run('.baguetteBox', {
+            captions: true,       // true|false|callback(element) - 显示图片说明
+            buttons: 'auto',      // 'auto'|true|false - 显示翻页按钮
+            async: true,         // true|false - 异步加载
+            preload: 2,           // [number] - 需要预加载图片的个数
+            animation: 'slideIn', // 'slideIn'|'fadeIn'|false - 动画
+            afterShow: null,      // callback - To be run after showing the overlay
+            afterHide: null,      // callback - To be run after hiding the overlay
+            onChange: null,       // callback(currentIndex, imagesElements.length) - When image changes
+            filter: /.+\.(gif|jpe?g|png|webp)/i // RegExp object - 正则去匹配文件
+        });
+    })
+    </script>
+    <style>
+    .img-thumbnail {
+        display:inline-block;
+        max-width:100%;
+        height:auto;
+        padding:4px;
+        line-height:1.42857143;
+        background-color:#FFF;
+        border:1px solid #DDD;
+        border-radius:4px;
+        transition:all 0.2s ease-in-out;}
+    </style>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-md-3">
+        <div id="treeview"></div>
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+            <div class="baguetteBox gallery">
+                {% for image_url in image_list %}
+                <div class="col-md-3">
+                    <a href="{{ image_url }}" class="thumbnail" >
+                        <img src="{{ image_url }}">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <ul id="paginator"></ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

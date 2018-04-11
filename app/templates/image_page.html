@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<title>图像页面</title>
+{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/static/vendor/jstree-3.3.5/themes/default/style.min.css" />
+<style type="text/css">
+
+#div-card {
+    padding: 10px;
+}
+
+#div-tree li a {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#div-image img {
+    width: 100%;
+    height:300px;
+}
+
+</style>
+{% endblock %}
+
+{% block page_js %}
+<script src="/static/vendor/jstree-3.3.5/jstree.min.js"></script>
+<script type="text/javascript">
+$(function () {
+    var tree_view = $("#div-tree");
+    tree_view.jstree({
+        "core": {
+            "multiple": false,
+            "data": {{ tree_data|safe }},
+            "dblclick_toggle": true          //禁用tree的双击展开
+        },
+        "plugins": ["search"]
+    });
+    //tree change时事件
+    tree_view.on("changed.jstree", function (e, data) {
+        window.location.href = "/image/" + data.node.id + "/";
+    });
+    //输入框输入定时自动搜索
+    $("#input-search").keyup(function () {
+        setTimeout(function () {
+            tree_view.jstree(true).search($("#input-search").val());
+        }, 250);
+    });
+});
+</script>
+{% endblock %}
+
+{% block page_content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="card" id="div-card">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">搜索</span>
+                    </div>
+                    <input type="text" class="form-control" id="input-search">
+                </div>
+                <div id="div-tree"></div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            {% for url in list_data %}
+                <a href="{{ url }}" target="_blank">
+                    <img src="{{ url }}" class="img-thumbnail">
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

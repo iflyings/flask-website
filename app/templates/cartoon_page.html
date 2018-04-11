@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<title>漫画页面</title>
+{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/static/vendor/jstree-3.3.5/themes/default/style.min.css" />
+<style type="text/css">
+
+#div-card {
+    padding: 10px;
+}
+
+</style>
+{% endblock %}
+
+{% block page_js %}
+<script src="/static/vendor/jstree-3.3.5/jstree.min.js"></script>
+<script type="text/javascript">
+
+$(function () {
+    var tree_view = $("#div-tree");
+    tree_view.jstree({
+        "core": {
+            "multiple": false,
+            "data": {{ tree_data|safe }},
+            "dblclick_toggle": true          //禁用tree的双击展开
+        },
+        "plugins": ["search"]
+    });
+    //tree change时事件
+    tree_view.on("changed.jstree", function (e, data) {
+        window.location.href = "/cartoon/" + data.node.id + "/1/";
+        //window.scrollTo(0, 0)
+    });
+    //输入框输入定时自动搜索
+    $("#input-search").keyup(function () {
+        setTimeout(function () {
+            tree_view.jstree(true).search($("#input-search").val());
+        }, 250);
+    });
+});
+</script>
+{% endblock %}
+
+{% block page_content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="card" id="div-card">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">搜索</span>
+                    </div>
+                    <input type="text" class="form-control" id="input-search">
+                </div>
+                <div id="div-tree"></div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            {% for image_url in list_data %}
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <a href="{{ image_url }}" target="_blank">
+                        <img src="{{ image_url }}" class="img-thumbnail"/>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            <nav class="row justify-content-center">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="/cartoon/{{ id }}/1/">首页</a>
+                    </li>
+                    {% if index - 1 >= 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="/cartoon/{{ id }}/{{ index - 1 }}/">上一页</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">上一页</a>
+                    </li>
+                    {% endif %}
+                    {% if index - 2 >= 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="/cartoon/{{ id }}/{{ index - 2 }}/">{{ index - 2 }}</a>
+                    </li>
+                    {% endif %}
+                    {% if index - 1 >= 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="/cartoon/{{ id }}/{{ index - 1 }}/">{{ index - 1 }}</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <a class="page-link" href="/cartoon/{{ id }}/{{ index }}/">{{ index }}</a>
+                    </li>
+                    {% if index + 1 <= total %}
+                    <li class="page-item">
+                        <a class="page-link" href="/cartoon/{{ id }}/{{ index + 1 }}/">{{ index + 1 }}</a>
+                    </li>
+                    {% endif %}
+                    {% if index + 2 <= total %}
+                    <li class="page-item">
+                        <a class="page-link disable" href="/cartoon/{{ id }}/{{ index + 2 }}/">{{ index + 2 }}</a>
+                    </li>
+                    {% endif %}
+                    {% if index + 1 <= total %}
+                    <li class="page-item">
+                        <a class="page-link" href="/cartoon/{{ id }}/{{ index + 1 }}/">下一页</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link disabled" href="#">下一页</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link" href="/cartoon/{{ id }}/{{ total }}/">尾页</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

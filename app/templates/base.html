@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    {% block page_title %} <title>这里定义了一个title</title> {% endblock %}
+    {% endif %}
+
+    <link rel="icon" href="/static/image/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/vendor/bootstrap-4.0.0-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <style type="text/css">
+        #page_content {
+            box-sizing: border-box;
+            background-color: #e1e1e1;
+            padding:35px 35px 75px 35px;
+        }
+        footer #copyright {
+            box-sizing: border-box;
+            color: #99979c;
+            background-color: #2a2730;
+            text-align: center;
+            font-size: 14px;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 30px 0 30px 0;
+        }
+    </style>
+    {% block page_css %} {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+</head>
+
+<body>
+    <header>
+        <ul class="nav nav-pills">
+            <li class="active"><a class="nav-link" href="/">首页</a></li>
+            <li><a class="nav-link" href="/image">图像</a></li>
+            <li><a class="nav-link" href="/cartoon">漫画</a></li>
+            <li><a class="nav-link" href="/download">下载</a></li>
+            <li><a class="nav-link" href="#">关于</a></li>
+        </ul>
+    </header>
+
+    <section id="page_content">
+    {% block page_content %} <h1>这里定义了一个名为content的block</h1> {% endblock %}
+    </section>
+
+    <footer>
+        <div id="copyright">
+            <address>
+                <strong>ZhangWang, Inc.</strong><br>
+                <a href="mailto:#">zwwust@126.com</a><br>
+                <abbr title="Phone">Phone:</abbr> 18576486539
+            </address>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="/static/vendor/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/static/vendor/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+
+    {% block page_js %} {% endblock %}
+
+</body>
+</html>
